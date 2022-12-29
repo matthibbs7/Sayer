@@ -4,22 +4,13 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import UserOperations from '../../graphql/operations/user'
 import { useMutation } from "@apollo/client";
+import { CreateUsernameData, CreateUsernameVariables } from "../../utils/types";
+import toast from "react-hot-toast";
 
 type AuthProps = {
     session: Session | null;
     reloadSession: () => void;
 };
-
-interface CreateUsernameData {
-    createUsername: {
-        success: boolean;
-        error: string;
-    }
-}
-
-interface CreateUsernameVariables {
-    username: string;
-}
 
 const Auth:React.FC<AuthProps> = ({
     session,
@@ -44,11 +35,14 @@ const Auth:React.FC<AuthProps> = ({
                 const { createUsername: { error }} = data;
                 throw new Error(error)
             }
+            
+            toast.success('Username successfully created!');
 
             // reload session to obtain new username
             reloadSession()
 
-        } catch (error) {
+        } catch (error: any) {
+            toast.error(error?.message)
             console.log('onSubmit error', error);
         }
     }
@@ -60,7 +54,7 @@ const Auth:React.FC<AuthProps> = ({
                     <>
                         <Text fontSize="3xl">Create a Username</Text>
                         <Input placeholder="Enter a username" value={username} onChange={(event) => setUsername(event.target.value)} />  
-                        <Button w="100%" onClick={onSubmit}>Save</Button>
+                        <Button isLoading={loading} w="100%" onClick={onSubmit}>Save</Button>
                     </>  
                 ) : (
                     <>

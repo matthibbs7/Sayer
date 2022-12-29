@@ -9,7 +9,7 @@ const Home: NextPage = () => {
 
 
   const reloadSession = () => {
-    const event = new Event("visbilitychange")
+    const event = new Event("visibilitychange")
     document.dispatchEvent(event)
   }
 
@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   return (
     <Box>
       {session?.user.username ? 
-        <Chat /> 
+        <Chat session={session} /> 
         : 
         <Auth session={session} reloadSession={reloadSession} />
       }
